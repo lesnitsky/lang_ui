@@ -5,7 +5,7 @@ class Word {
   List<String> translations;
 
   Word({this.text, this.translations}) {
-    translations ??= [];
+    translations ??= [''];
   }
 
   toJson() {
@@ -15,10 +15,21 @@ class Word {
     };
   }
 
-  static fromJson(dynamic data) {
+  static Word fromJson(dynamic data) {
     return Word(
       text: data['text'],
       translations: List.from(data['translations']),
     );
+  }
+
+  clone() {
+    return fromJson(toJson());
+  }
+
+  isValid() {
+    return text != null &&
+        text.length > 0 &&
+        translations.length > 0 &&
+        !translations.any((t) => t == null || t.length == 0);
   }
 }

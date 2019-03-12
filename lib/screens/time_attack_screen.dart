@@ -2,6 +2,9 @@ import 'dart:math';
 import 'dart:async';
 import 'package:flutter/material.dart';
 
+import 'package:lang_ui/entities.dart' show Word;
+import 'package:lang_ui/localstorage.dart';
+
 class TimeAttackScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
@@ -15,9 +18,9 @@ class TimeAttackContent extends StatefulWidget {
 }
 
 class _TimeAttackContentState extends State<TimeAttackContent> {
-  List<String> words = [];
+  List<Word> words = [];
 
-  static int duration = 30;
+  static int duration = 120;
 
   int points = 0;
   int seconds = duration;
@@ -29,6 +32,13 @@ class _TimeAttackContentState extends State<TimeAttackContent> {
 
   Random random = new Random();
 
+  @override
+  initState() {
+    words = getWords('en');
+
+    super.initState();
+  }
+
   _nextWord([int answer]) {
     if (answer == correct && answer != null) {
       points++;
@@ -38,7 +48,7 @@ class _TimeAttackContentState extends State<TimeAttackContent> {
 
     correct = random.nextInt(words.length);
 
-    word = words[correct].split(',')[0];
+    word = words[correct].text;
 
     options = [
       correct,
@@ -47,6 +57,11 @@ class _TimeAttackContentState extends State<TimeAttackContent> {
     ];
 
     options.shuffle();
+  }
+
+  _getRandomWordTranslation(int index) {
+    final word = words[index];
+    return word.translations[0];
   }
 
   _start() {
@@ -144,7 +159,7 @@ class _TimeAttackContentState extends State<TimeAttackContent> {
                                     child: Padding(
                                   padding: EdgeInsets.all(15.0),
                                   child: Text(
-                                    words[options[0]].split(',')[1],
+                                    _getRandomWordTranslation(options[0]),
                                     style: TextStyle(fontSize: 20),
                                   ),
                                 )),
@@ -159,7 +174,7 @@ class _TimeAttackContentState extends State<TimeAttackContent> {
                                     child: Padding(
                                   padding: EdgeInsets.all(15.0),
                                   child: Text(
-                                    words[options[1]].split(',')[1],
+                                    _getRandomWordTranslation(options[1]),
                                     style: TextStyle(fontSize: 20),
                                   ),
                                 )),
@@ -174,7 +189,7 @@ class _TimeAttackContentState extends State<TimeAttackContent> {
                                   child: Padding(
                                     padding: EdgeInsets.all(15.0),
                                     child: Text(
-                                      words[options[2]].split(',')[1],
+                                      _getRandomWordTranslation(options[2]),
                                       style: TextStyle(fontSize: 20),
                                     ),
                                   ),
